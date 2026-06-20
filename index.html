@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Jardín de Manzana">
+<title>Jardín de Manzana</title>
+<style>
+  :root{
+    --cielo-1:#FFE8C2; --cielo-2:#FFB199;
+    --tinta:#3B2A1A; --crema:#FFF8EC;
+    --acento:#D1495B; --acento-2:#F2C14E;
+    --hoja:#4F7942; --hoja-clara:#7FAA65;
+  }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; min-height:100%; }
+  body{
+    font-family:-apple-system, "Avenir Next", "Helvetica Neue", sans-serif;
+    background:linear-gradient(160deg,var(--cielo-1) 0%, var(--cielo-2) 55%, #F2C29E 100%);
+    color:var(--tinta);
+    min-height:100vh;
+    display:flex; align-items:center; justify-content:center;
+    padding:24px; position:relative; overflow-x:hidden;
+  }
+
+  /* Decoración floral de fondo */
+  .deco{ position:fixed; pointer-events:none; opacity:0.5; z-index:0; }
+  .deco svg{ display:block; }
+  .deco-1{ top:-40px; left:-40px; width:180px; }
+  .deco-2{ bottom:-50px; right:-50px; width:220px; }
+  .deco-3{ top:30%; right:-60px; width:140px; opacity:0.3; }
+  .deco-4{ bottom:10%; left:-50px; width:150px; opacity:0.35; }
+
+  .tarjeta{
+    position:relative; z-index:2;
+    background:rgba(255,248,236,0.92);
+    backdrop-filter:blur(6px);
+    border-radius:28px;
+    padding:40px 32px 36px;
+    width:100%; max-width:420px;
+    box-shadow:0 18px 50px rgba(107,68,35,0.22);
+    text-align:center;
+    border:1px solid rgba(255,255,255,0.6);
+  }
+
+  .corona{ font-size:38px; margin-bottom:6px; }
+  h1{
+    font-family:Georgia, "Iowan Old Style", serif;
+    font-size:28px; margin:0 0 4px; color:var(--tinta); letter-spacing:0.3px;
+  }
+  .subtitulo{
+    font-size:13px; opacity:0.65; margin:0 0 28px; letter-spacing:0.5px;
+  }
+
+  .opciones{ display:flex; flex-direction:column; gap:14px; }
+  .btn{
+    display:flex; align-items:center; justify-content:center; gap:10px;
+    border:none; border-radius:16px; padding:16px 18px;
+    font-size:15px; font-weight:700; letter-spacing:0.2px;
+    cursor:pointer; transition:transform 150ms ease, box-shadow 150ms ease;
+  }
+  .btn:active{ transform:scale(0.97); }
+  .btn-primario{
+    background:linear-gradient(135deg, var(--acento), #C13A50);
+    color:#fff; box-shadow:0 10px 22px rgba(209,73,91,0.35);
+  }
+  .btn-secundario{
+    background:#fff; color:var(--tinta); border:2px solid var(--hoja-clara);
+  }
+
+  .separador{
+    display:flex; align-items:center; gap:10px; margin:22px 0 4px;
+    font-size:11px; opacity:0.5; text-transform:uppercase; letter-spacing:1px;
+  }
+  .separador::before, .separador::after{ content:""; flex:1; height:1px; background:rgba(59,42,26,0.2); }
+
+  /* Login */
+  .login{
+    display:none; margin-top:18px; text-align:left;
+    background:#fff; border-radius:16px; padding:18px;
+    border:1px solid rgba(107,68,35,0.12);
+  }
+  .login.activo{ display:block; animation:abrir 280ms ease both; }
+  @keyframes abrir{ from{ opacity:0; transform:translateY(-6px); } to{ opacity:1; transform:translateY(0); } }
+  .login label{ font-size:11px; text-transform:uppercase; letter-spacing:0.8px; opacity:0.65; display:block; margin:10px 0 5px; }
+  .login input{
+    width:100%; padding:12px 13px; border-radius:12px; border:2px solid var(--hoja-clara);
+    font-size:15px; outline:none; background:#FFFCF7; color:var(--tinta);
+  }
+  .login input:focus{ border-color:var(--acento); }
+  .login button{
+    margin-top:16px; width:100%; padding:13px; border:none; border-radius:12px;
+    background:var(--hoja); color:#fff; font-weight:700; font-size:14px; cursor:pointer;
+  }
+  .login-error{ color:var(--acento); font-size:12px; margin-top:8px; min-height:16px; font-weight:600; }
+
+  .pie{ margin-top:26px; font-size:11px; opacity:0.45; }
+
+  @media (min-width: 700px){
+    .tarjeta{ padding:48px 44px 42px; }
+    h1{ font-size:32px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="deco deco-1"><svg viewBox="0 0 100 100"><g fill="#D1495B" opacity="0.55"><circle cx="50" cy="30" r="16"/><circle cx="30" cy="55" r="14"/><circle cx="68" cy="58" r="15"/></g><g fill="#F2C14E"><circle cx="50" cy="30" r="6"/><circle cx="30" cy="55" r="5"/><circle cx="68" cy="58" r="5.5"/></g></svg></div>
+<div class="deco deco-2"><svg viewBox="0 0 100 100"><g fill="#7FAA65" opacity="0.5"><circle cx="40" cy="40" r="18"/><circle cx="65" cy="60" r="16"/></g><g fill="#FFD66B"><circle cx="40" cy="40" r="7"/><circle cx="65" cy="60" r="6"/></g></svg></div>
+<div class="deco deco-3"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="20" fill="#D98CC0"/><circle cx="50" cy="50" r="8" fill="#FFE8C2"/></svg></div>
+<div class="deco deco-4"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="20" fill="#F0935A"/><circle cx="50" cy="50" r="8" fill="#FFF6DC"/></svg></div>
+
+<div class="tarjeta">
+  <div class="corona">🌸</div>
+  <h1>Jardín de Manzana</h1>
+  <p class="subtitulo">Un lugar que crece con cada flor</p>
+
+  <div class="opciones">
+    <button class="btn btn-primario" id="btnEntrar">🌷 Entrar al jardín</button>
+    <button class="btn btn-secundario" id="btnGenerar">🔐 Generar un código</button>
+  </div>
+
+  <div class="login" id="login">
+    <label for="usuario">Usuario</label>
+    <input id="usuario" type="text" autocomplete="username">
+    <label for="clave">Contraseña</label>
+    <input id="clave" type="password" autocomplete="current-password">
+    <button id="btnEntrarLogin">Entrar</button>
+    <div class="login-error" id="loginError"></div>
+  </div>
+
+  <div class="pie">Hecho con cariño, una flor a la vez.</div>
+</div>
+
+<script>
+/* ===================== CREDENCIALES =====================
+   Cambia este usuario y contraseña por los que tú quieras.
+   Esto es una protección básica para que no cualquiera entre
+   al generador de códigos; no es un sistema de seguridad robusto
+   (es un sitio estático), así que no comparas este enlace con nadie.
+   ============================================================= */
+const USUARIO_VALIDO = "mario";
+const CLAVE_VALIDA = "manzana2026";
+
+document.getElementById('btnEntrar').addEventListener('click', ()=>{
+  window.location.href = "jardin.html";
+});
+
+const login = document.getElementById('login');
+document.getElementById('btnGenerar').addEventListener('click', ()=>{
+  login.classList.toggle('activo');
+  if(login.classList.contains('activo')) document.getElementById('usuario').focus();
+});
+
+function intentarLogin(){
+  const u = document.getElementById('usuario').value.trim();
+  const c = document.getElementById('clave').value;
+  const error = document.getElementById('loginError');
+  if(u === USUARIO_VALIDO && c === CLAVE_VALIDA){
+    sessionStorage.setItem('jardin_autorizado', '1');
+    window.location.href = "generador.html";
+  } else {
+    error.textContent = "Usuario o contraseña incorrectos.";
+  }
+}
+document.getElementById('btnEntrarLogin').addEventListener('click', intentarLogin);
+document.getElementById('clave').addEventListener('keydown', (e)=>{
+  if(e.key === 'Enter') intentarLogin();
+});
+</script>
+</body>
+</html>
