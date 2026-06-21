@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Generador de códigos — Jardín</title>
+<style>
+  body{ font-family:-apple-system, sans-serif; background:#1E1A33; color:#F4F1FF; padding:24px; max-width:420px; margin:0 auto; }
+  h1{ font-size:18px; }
+  label{ display:block; font-size:13px; margin:14px 0 6px; opacity:0.8; }
+  select, input{ width:100%; padding:12px; border-radius:10px; border:2px solid #5B4E94; background:#2A2547; color:#fff; font-size:16px; }
+  button{ margin-top:18px; width:100%; padding:14px; border:none; border-radius:12px; background:#D1495B; color:#fff; font-size:16px; font-weight:700; }
+  .resultado{ margin-top:20px; padding:16px; background:#2A2547; border-radius:12px; font-size:20px; letter-spacing:1px; text-align:center; font-weight:700; word-break:break-all; }
+  .nota{ font-size:12px; opacity:0.6; margin-top:10px; line-height:1.5; }
+</style>
+</head>
+<body>
+<p class="nota" style="margin-bottom:18px;"><a href="index.html" style="color:#F4F1FF;">&larr; Volver al menú</a></p>
+<h1>Generador de códigos del jardín</h1>
+<p class="nota">Esta herramienta es solo para ti. No se la compartas a tu novia — si ella la tuviera, podría generar sus propios códigos.</p>
+
+<label for="palabra">Palabra</label>
+<select id="palabra">
+  <option value="MANZANA">MANZANA (12 flores)</option>
+  <option value="FLOR">FLOR (10 flores)</option>
+  <option value="ROSA">ROSA (6 flores)</option>
+  <option value="AMOR">AMOR (20 flores)</option>
+  <option value="LUNA">LUNA (8 flores)</option>
+  <option value="SOL">SOL (15 flores)</option>
+  <option value="BESO">BESO (3 flores)</option>
+  <option value="CORAZON">CORAZON (25 flores)</option>
+  <option value="ANIVERSARIO">ANIVERSARIO (1 flor dorada especial)</option>
+</select>
+
+<label for="nota">Nota opcional (aparece al tocar la flor)</label>
+<input type="text" id="nota" placeholder="Ej. Por nuestro aniversario" maxlength="120">
+
+<label for="fechaFlor">Fecha de la entrega (opcional — para flores de fechas pasadas)</label>
+<input type="date" id="fechaFlor">
+<p class="nota">Si la dejas vacía, se usa la fecha de hoy automáticamente.</p>
+
+<button id="generar">Generar código</button>
+
+<div class="resultado" id="resultado">—</div>
+<p class="nota" id="copiado" style="opacity:0;">Copiado al portapapeles.</p>
+
+<script>
+/* Verificación básica de sesión: si no entró por el login del menú, lo regresa */
+if(sessionStorage.getItem('jardin_autorizado') !== '1'){
+  window.location.href = "index.html";
+}
+
+/* Debe ser EXACTAMENTE la misma clave que está en jardin.html */
+const CLAVE_SECRETA = "NuestroJardin-2026-Secreto";
+
+function calcularFirma(palabra, numero, clave){
+  const texto = palabra + "-" + numero + "-" + clave;
+  let hash = 5381;
+  for(let i=0; i<texto.length; i++){
+    hash = ((hash * 33) ^ texto.charCodeAt(i)) >>> 0;
+  }
+  return String(hash % 9973).padStart(4, "0");
+}
+
+function b64EncodeUnicode(str){
+  return btoa(unescape(encodeURIComponent(str)));
+}
+
+document.getElementById('generar').addEventListener('click', ()=>{
+  const palabra = document.getElementById('palabra').value;
+  const nota = document.getElementById('nota').value.trim();
+  const fecha = document.getElementById('fechaFlor').value; // formato YYYY-MM-DD o vacío
+  const numero = String(Math.floor(10000 + Math.random()*89999));
+  const firma = calcularFirma(palabra, numero, CLAVE_SECRETA);
+  let codigo = `${palabra}-${numero}-${firma}`;
+
+  if(nota || fecha){
+    const payload = {};
+    if(nota) payload.nota = nota;
+    if(fecha) payload.fecha = fecha;
+    codigo += `-${b64EncodeUnicode(JSON.stringify(payload))}`;
+  }
+
+  document.getElementById('resultado').textContent = codigo;
+
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(codigo).then(()=>{
+      const c = document.getElementById('copiado');
+      c.style.opacity = 1;
+      setTimeout(()=>{ c.style.opacity = 0; }, 2000);
+    }).catch(()=>{});
+  }
+});
+</script>
+</body>
+</html>
