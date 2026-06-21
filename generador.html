@@ -15,6 +15,7 @@
 </style>
 </head>
 <body>
+<p class="nota" style="margin-bottom:18px;"><a href="index.html" style="color:#F4F1FF;">&larr; Volver al menú</a></p>
 <h1>Generador de códigos del jardín</h1>
 <p class="nota">Esta herramienta es solo para ti. No se la compartas a tu novia — si ella la tuviera, podría generar sus propios códigos.</p>
 
@@ -34,12 +35,21 @@
 <label for="nota">Nota opcional (aparece al tocar la flor)</label>
 <input type="text" id="nota" placeholder="Ej. Por nuestro aniversario" maxlength="120">
 
+<label for="fechaFlor">Fecha de la entrega (opcional — para flores de fechas pasadas)</label>
+<input type="date" id="fechaFlor">
+<p class="nota">Si la dejas vacía, se usa la fecha de hoy automáticamente.</p>
+
 <button id="generar">Generar código</button>
 
 <div class="resultado" id="resultado">—</div>
 <p class="nota" id="copiado" style="opacity:0;">Copiado al portapapeles.</p>
 
 <script>
+/* Verificación básica de sesión: si no entró por el login del menú, lo regresa */
+if(sessionStorage.getItem('jardin_autorizado') !== '1'){
+  window.location.href = "index.html";
+}
+
 /* Debe ser EXACTAMENTE la misma clave que está en jardin.html */
 const CLAVE_SECRETA = "NuestroJardin-2026-Secreto";
 
@@ -59,12 +69,18 @@ function b64EncodeUnicode(str){
 document.getElementById('generar').addEventListener('click', ()=>{
   const palabra = document.getElementById('palabra').value;
   const nota = document.getElementById('nota').value.trim();
+  const fecha = document.getElementById('fechaFlor').value; // formato YYYY-MM-DD o vacío
   const numero = String(Math.floor(10000 + Math.random()*89999));
   const firma = calcularFirma(palabra, numero, CLAVE_SECRETA);
   let codigo = `${palabra}-${numero}-${firma}`;
-  if(nota){
-    codigo += `-${b64EncodeUnicode(nota)}`;
+
+  if(nota || fecha){
+    const payload = {};
+    if(nota) payload.nota = nota;
+    if(fecha) payload.fecha = fecha;
+    codigo += `-${b64EncodeUnicode(JSON.stringify(payload))}`;
   }
+
   document.getElementById('resultado').textContent = codigo;
 
   if(navigator.clipboard){
